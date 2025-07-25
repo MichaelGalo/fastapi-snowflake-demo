@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from src.models.space_weather import SpaceWeather
 from src.dependencies.sqlalchemy_connection import sqlalchemy_engine
