@@ -1,21 +1,14 @@
-from src.dependencies.snowflake_connection import get_snowflake_connection
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from src.models.space_weather import SpaceWeather
+from src.dependencies.sqlalchemy_connection import sqlalchemy_engine
 
 
 def fetch_space_weather():
-    conn = get_snowflake_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute(
-            'SELECT "messageID", "messageType", "messageBody", "messageIssueTime_formatted" FROM STG_SPACE_WEATHER'
-        )
-        rows = cursor.fetchall()
-        space_weather_list = []
-
-        for row in rows:
-            space_weather_list.append(row)
-
-        cursor.close()
-        return space_weather_list
-
-    finally:
-        conn.close()
+    engine = sqlalchemy_engine()
+    with Session(engine) as session:
+        stmt = select(SpaceWeather)
+        results = session.execute(stmt).scalars().all()
+        # Convert model instances to dicts for FastAPI serialization
+        space_weather_list = [weather.model_dump() for weather in results]
+    return space_weather_list

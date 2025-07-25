@@ -20,7 +20,7 @@ def get_snowflake_connection():
         f"Connecting to Snowflake: account={account}, user={user}, database={database}, schema={schema}, warehouse={warehouse}, role={role}"
     )
     try:
-        ctx = snowflake.connector.connect(
+        snowflake_connection = snowflake.connector.connect(
             user=user,
             password=password,
             account=account,
@@ -30,7 +30,7 @@ def get_snowflake_connection():
             role=role,
         )
         logger.info("Snowflake connection established successfully.")
-        return ctx
+        return snowflake_connection
     except Exception as e:
         logger.error(f"Failed to connect to Snowflake: {e}")
         raise
